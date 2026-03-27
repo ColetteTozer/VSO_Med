@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VSO Spore</title>
+    <!-- PWA & MOBILE STANDALONE CAPABILITIES -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VSO Spore">
+    
+    <!-- EMBEDDED BRANDED ICON (Base64 SVG) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMWExZTI2Ii8+PHBhdGggZD0iTTUwIDE1IEw4NSAzMCBMODUgNTUgQzg1IDc1IDUwIDkwIDUwIDkwIEM1MCA5MCAxNSA3NSAxNSA1NSBMMTUgMzAgTDUwIDE1IFoiIGZpbGw9IiM0YTkwZTIiLz48cmVjdCB4PSI0NCIgeT0iMzUiIHdpZHRoPSIxMiIgaGVpZ2h0PSIzMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIzNSIgeT0iNDQiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMWExZTI2Ii8+PHBhdGggZD0iTTUwIDE1IEw4NSAzMCBMODUgNTUgQzg1IDc1IDUwIDkwIDUwIDkwIEM1MCA5MCAxNSA3NSAxNSA1NSBMMTUgMzAgTDUwIDE1IFoiIGZpbGw9IiM0YTkwZTIiLz48cmVjdCB4PSI0NCIgeT0iMzUiIHdpZHRoPSIxMiIgaGVpZ2h0PSIzMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIzNSIgeT0iNDQiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=">
+    <!-- 
+      SHR CATCHER ENGINE: Only external dependency. 
+      In a true air-gap, this would be bundled. 
+    -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root {
+            --bg-color: #0c0e12;
+            --card-bg: #1a1e26;
+            --accent-color: #4a90e2;
+            --text-main: #ffffff;
+            --text-dim: #a0aab8;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --gold: #f1c40f;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 15px 20px;
+            background: linear-gradient(180deg, rgba(26,30,38,1) 0%, rgba(12,14,18,1) 100%);
+            border-bottom: 1px solid #2d3442;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .settings-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .main-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #2d3442;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        /* TOGGLE SWITCHES */
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #2d3442;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2d3442;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* BUTTON MATRIX */
+        .button-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .matrix-btn {
+            background: #2d3442;
+            border: 1px solid #3e4859;
+            color: white;
+            padding: 20px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .matrix-btn.selected {
+            background: var(--accent-color);
+            border-color: #5da5fc;
+        }
+
+        .matrix-btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-emoji { font-size: 1.5rem; }
+
+        /* CHATBOT BUBBLE */
+        .chat-bubble {
+            background: #252b36;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border-bottom-left-radius: 2px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            max-width: 90%;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            background: #0c0e12;
+            border: 1px solid #2d3442;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 1rem;
+            resize: none;
+        }
+
+        /* BOTTOM NAV */
+        nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #1a1e26;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 10px;
+            border-top: 1px solid #2d3442;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-decoration: none;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item.active { color: var(--accent-color); }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 4px; }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        #reader {
+            width: 100%;
+            height: 280px;
+            background: black;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        #qr-manifest {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border: 1px solid #2d3442;
+        }
+
+        /* WELLNESS TAB */
+        .wellness-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 40px;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: box-breath 16s infinite ease-in-out;
+        }
+
+        .breath-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        @keyframes box-breath {
+            0%, 25% { transform: scale(0.8); } /* Inhale (0-4s) & Hold (4-8s) */
+            50%, 75% { transform: scale(1.2); } /* Exhale (8-12s) & Hold (12-16s) */
+        }
+
+        .osc-controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .osc-btn {
+            background: #2d3442;
+            border: 1px solid #3e4859;
+            color: white;
+            padding: 15px 5px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* MED CABINET */
+        .med-input-group {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .med-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0c0e12;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* WHITECOAT SCREEN */
+        .whitecoat-list {
+            font-size: 1.5rem;
+            line-height: 2;
+            font-weight: bold;
+            color: white;
+            padding: 20px 0;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body { background: white; color: black; height: auto; overflow: visible; }
+            nav, header, .nav-item, button, .settings-icon, .tab-content, .card:not(#print-dossier-card) {
+                display: none !important;
+            }
+            #print-dossier {
+                display: block !important;
+                padding: 40px;
+                background: white;
+                color: black;
+            }
+            .no-print { display: none !important; }
+        }
+
+        #print-dossier {
+            display: none;
+            color: black;
+            background: white;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .dossier-header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="main-header">VSO SPORE</h1>
+    <span class="settings-icon" onclick="showTab('setup')">⚙️</span>
+</header>
+
+<div class="main-container">
+    <!-- TAB 1: SETUP / LOADOUT -->
+    <div id="setup" class="tab-content">
+        <div class="card">
+            <h2>User Profile</h2>
+            <div class="chat-bubble">Set your preferred name for the secure dashboard:</div>
+            <input type="text" id="user-nickname" placeholder="Nickname / Preferred Name" oninput="updateName()" style="width:100%; background:#0c0e12; color:white; padding:12px; border-radius:8px; border:1px solid #2d3442;">
+        </div>
+
+        <div class="card">
+            <h2>Modular Loadout</h2>
+            <p style="font-size:0.85rem; color:var(--text-dim)">Toggle your active service-connected conditions to customize your dashboard.</p>
+            
+            <div class="toggle-item">
+                <span>🧠 Migraines</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-migraine" onchange="toggleLoadout('migraine')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-item">
+                <span>🦴 Back / Joint Pain</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-back" onchange="toggleLoadout('back')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-item">
+                <span>💩 IBS / Gastro</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-ibs" onchange="toggleLoadout('ibs')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-item">
+                <span style="color:var(--gold)">🧠 Mental Health (VA 4.130)</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-mental" onchange="toggleLoadout('mental')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <span>🏥 C&P Exam Overwatch</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-cp_audit" onchange="toggleLoadout('cp_audit')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <span>📸 Visual Evidence Logger</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-visual_log" onchange="toggleLoadout('visual_log')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <span>💼 TDIU / Employment Impact</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-tdiu_impact" onchange="toggleLoadout('tdiu_impact')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <span>💊 Medication Tracker</span>
+                <label class="switch">
+                    <input type="checkbox" id="loadout-medication" onchange="toggleLoadout('medication')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div id="med-cabinet-section" style="margin-top:20px; border-top:1px solid #2d3442; padding-top:20px;">
+                <h3>🛡️ Med Cabinet (Virtual Pillbox)</h3>
+                <div class="med-input-group">
+                    <input type="text" id="new-med-name" placeholder="Name">
+                    <input type="text" id="new-med-dose" placeholder="Dose">
+                    <select id="new-med-type">
+                        <option>Rx</option>
+                        <option>OTC</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="addMed()" style="padding:10px; font-size:0.8rem;">Add to Pillbox</button>
+                <div id="med-cabinet-list" style="margin-top:15px;"></div>
+            </div>
+            
+            <button class="btn-primary" onclick="showTab('tracker')">Lock & Deploy Dashboard</button>
+        </div>
+    </div>
+
+    <!-- TAB 2: SYMPTOM TRACKER (DYNAMIC) -->
+    <div id="tracker" class="tab-content active">
+        <div id="empty-dashboard" style="display:none; text-align:center; padding:40px 20px;">
+            <p style="font-size:1.5rem;">🛰️</p>
+            <p style="color:var(--text-dim)">Spore Standby. Go to Setup (⚙️) to activate condition modules.</p>
+        </div>
+
+        <div id="dashboard-buttons">
+            <div class="chat-bubble">Awaiting input. Which symptom log are we starting?</div>
+            <div class="button-matrix" id="active-matrix">
+                <!-- DYNAMICALLY RENDERED -->
+            </div>
+        </div>
+
+        <div id="flow-container" style="display:none; margin-top:10px;">
+            <div class="card">
+                <h2 id="flow-title">Logging Sequence</h2>
+                <div id="flow-questions"></div>
+                
+                <p style="margin-top:20px; font-size:0.9rem;">Additional Tactical Observations:</p>
+                <textarea id="flow-notes" rows="4" placeholder="Describe environmental triggers or meds..."></textarea>
+                
+                <button class="btn-primary" onclick="saveLog()">Save to Permanent Record</button>
+                <button class="btn-primary" style="background:#2d3442; color:var(--text-dim)" onclick="resetTracker()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:25px;">
+            <h2>Daily Record</h2>
+            <div id="logs-list" style="font-size:0.85rem;">
+                <p style="color:var(--text-dim)">Scanning archives... No logs found.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: BUDDY STATEMENT -->
+    <div id="buddy" class="tab-content">
+        <div class="card">
+            <h2>Buddy Wizard (VA-21-10210)</h2>
+            <div id="buddy-wizard">
+                <div class="chat-bubble">1. How frequent are their social withdrawals?</div>
+                <select id="buddy-q1" onchange="updateBuddy()" style="width:100%; background:#0c0e12; color:white; padding:12px; border-radius:8px;">
+                    <option>Rarely / Not at all</option>
+                    <option>Sometimes (isolates for hours)</option>
+                    <option>Frequently (refuses crowds)</option>
+                    <option>Always (lives in total isolation)</option>
+                </select>
+
+                <div class="chat-bubble">2. Physical limitations at home?</div>
+                <textarea id="buddy-q2" oninput="updateBuddy()" placeholder="Difficulty with dressing, chores, etc..."></textarea>
+
+                <div class="chat-bubble">3. Observed behavioral changes?</div>
+                <textarea id="buddy-q3" oninput="updateBuddy()" placeholder="Irritability, memory gaps, mood swings..."></textarea>
+
+                <div class="chat-bubble">4. Frequency of flares?</div>
+                <input type="text" id="buddy-q4" oninput="updateBuddy()" style="width:100%; background:#0c0e12; color:white; padding:12px; border-radius:8px; border:1px solid #2d3442;" placeholder="E.g. Daily, 3x per week">
+            </div>
+
+            <div style="margin-top:20px;">
+                <h2 style="font-size:0.9rem; color:var(--text-dim)">DRAFT STATEMENT</h2>
+                <div id="buddy-output" style="background:#000; padding:15px; border-radius:8px; font-family:monospace; color:#0f0; font-size:0.8rem; border:1px solid #2d3442;">
+                    [Synthesis Active]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: SYNC (SHR) -->
+    <div id="receive" class="tab-content">
+        <div class="card">
+            <h2>SHR Secure Sync</h2>
+            <div id="reader"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button class="btn-primary" id="start-scan">Open Sync</button>
+                <button class="btn-primary" style="background:var(--danger)" id="stop-scan">Close</button>
+            </div>
+            <div style="margin-top:20px;">
+                <div id="qr-manifest">Awaiting Sync Burst...</div>
+                <button class="btn-primary" style="background:var(--success)" onclick="window.print()">Export Official Log (PDF)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: WELLNESS (DECOMPRESSION) -->
+    <div id="wellness" class="tab-content">
+        <div class="card">
+            <h2>🧘 Tactical Decompression</h2>
+            <div class="wellness-container">
+                <div class="breathing-circle">
+                    <span class="breath-text" id="breath-label">Breathe</span>
+                </div>
+                
+                <div style="text-align:center;">
+                    <h3>Frequency Oscillator</h3>
+                    <p style="font-size:0.8rem; color:var(--text-dim)">Pulsed Sines for Vagus Nerve stimulation.</p>
+                    <div class="osc-controls">
+                        <button class="osc-btn" onclick="playFreq(20)">20Hz</button>
+                        <button class="osc-btn" onclick="playFreq(40)">40Hz</button>
+                        <button class="osc-btn" onclick="playFreq(60)">60Hz</button>
+                        <button class="osc-btn" style="background:var(--danger)" onclick="stopFreq()">STOP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: WHITECOAT (DOCTOR REFERENCE) -->
+    <div id="whitecoat" class="tab-content">
+        <div class="card" style="background:#0c0e12; border:2px solid var(--accent-color)">
+            <h1 style="color:var(--accent-color); font-size:1.8rem;">🩺 CURRENT MEDICATIONS</h1>
+            <div class="whitecoat-list" id="doctor-med-list">
+                <!-- DYNAMICALLY RENDERED -->
+            </div>
+            <button class="btn-primary" onclick="showTab('tracker')">Close Quick-Reference</button>
+        </div>
+    </div>
+
+    <!-- TAB 7: EXPORT DOSSIER -->
+    <div id="export" class="tab-content">
+        <div class="card">
+            <h2>📄 Evidence Dossier Generator</h2>
+            <p style="font-size:0.85rem; color:var(--text-dim)">Generate a formal, timeframe-filtered report for your BVA claim or VSO representative.</p>
+            
+            <div class="chat-bubble">Select the capture window for this report:</div>
+            <select id="export-timeframe" style="width:100%; background:#0c0e12; color:white; padding:15px; border-radius:8px; border:1px solid #2d3442; font-size:1rem;">
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last 3 Months</option>
+                <option value="180">Last 6 Months</option>
+                <option value="365">Last Year</option>
+                <option value="all">All Time (Master Record)</option>
+            </select>
+            
+            <button class="btn-primary" style="background:var(--success)" onclick="generateDossier()">Generate Formal PDF</button>
+            <p style="font-size:0.75rem; color:var(--text-dim); margin-top:15px; text-align:center;">This will prepare the dossier and trigger the browser's native Print/PDF dialogue.</p>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <div class="nav-item active" id="nav-tracker" onclick="showTab('tracker')">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+    </div>
+    <div class="nav-item" id="nav-buddy" onclick="showTab('buddy')">
+        <span class="nav-icon">👥</span>
+        <span>Buddy</span>
+    </div>
+    <div class="nav-item" id="nav-sync" onclick="showTab('receive')">
+        <span class="nav-icon">📡</span>
+        <span>Sync</span>
+    </div>
+    <div class="nav-item" id="nav-wellness" onclick="showTab('wellness')">
+        <span class="nav-icon">🧘</span>
+        <span>Wellness</span>
+    </div>
+    <div class="nav-item" id="nav-whitecoat" onclick="showTab('whitecoat')">
+        <span class="nav-icon">🩺</span>
+        <span>Doctor</span>
+    </div>
+    <div class="nav-item" id="nav-export" onclick="showTab('export')">
+        <span class="nav-icon">📄</span>
+        <span>Export</span>
+    </div>
+</nav>
+
+<!-- HIDDEN PRINT TEMPLATE -->
+<div id="print-dossier" class="no-screen">
+    <div class="dossier-header">
+        <h1>VETERAN MEDICAL & EVIDENCE DOSSIER</h1>
+        <p id="print-date-header"></p>
+        <p id="print-timeframe-header"></p>
+    </div>
+    
+    <div id="print-meds-section">
+        <h3>ACTIVE MEDICATIONS (AS RECORDED)</h3>
+        <ul id="print-med-list"></ul>
+    </div>
+    
+    <div id="print-logs-section">
+        <h3>CHRONOLOGICAL EVIDENCE LOGS</h3>
+        <div id="print-log-entries"></div>
+    </div>
+    
+    <div style="margin-top:50px; border-top:1px solid #ccc; padding-top:10px; font-size:0.8rem; font-style:italic;">
+        I certify that the above recorded symptoms and medications represent a true and accurate log maintained in real-time.
+    </div>
+</div>
+
+<script>
+    let loadout = JSON.parse(localStorage.getItem('vso_loadout') || '{"migraine":true, "back":true, "ibs":false, "mental":false, "cp_audit":false, "visual_log":false, "tdiu_impact":false, "medication":false}');
+    let userName = localStorage.getItem('vso_user_name') || '';
+    let medCabinet = JSON.parse(localStorage.getItem('vso_meds') || '[]');
+    let logs = JSON.parse(localStorage.getItem('vso_logs') || '[]');
+    let currentFlowData = {};
+
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if(document.getElementById('nav-'+tabId)) document.getElementById('nav-'+tabId).classList.add('active');
+        if(tabId === 'tracker') renderDashboard();
+    }
+
+    function toggleLoadout(id) {
+        loadout[id] = document.getElementById('loadout-'+id).checked;
+        localStorage.setItem('vso_loadout', JSON.stringify(loadout));
+    }
+
+    function initLoadoutUI() {
+        for(let key in loadout) {
+            if(document.getElementById('loadout-'+key)) {
+                document.getElementById('loadout-'+key).checked = loadout[key];
+            }
+        }
+    }
+
+    const flows = {
+        migraine: {
+            icon: "🧠", title: "Migraine Log",
+            questions: [
+                { id: "pain", label: "Pain Severity", type: "matrix", options: ["1-3", "4-6", "7-8", "9-10"] },
+                { id: "prostrating", label: "Prostrating?", type: "matrix", options: ["Yes", "No"] }
+            ]
+        },
+        back: {
+            icon: "🦴", title: "Joint/Back Log",
+            questions: [
+                { id: "pain", label: "Pain Level", type: "matrix", options: ["Mild", "Mod", "Severe"] },
+                { id: "rom", label: "ROM Loss?", type: "matrix", options: ["Minor", "Major", "Fixed"] }
+            ]
+        },
+        ibs: {
+            icon: "💩", title: "Gastro Log",
+            questions: [
+                { id: "bristol", label: "Bristol Scale", type: "matrix", options: ["Type 1-2: Hard lumps (Constip)", "Type 3-4: Smooth (Normal)", "Type 5-7: Liquid (Diarrhea)"] },
+                { id: "impact", label: "Cramping/Distress?", type: "matrix", options: ["Severe", "Mild", "None"] }
+            ]
+        },
+        mental: {
+            icon: "🧠", title: "Mental Health (4.130)",
+            questions: [
+                { id: "symptom", label: "Primary Symptom", type: "matrix", options: ["Panic", "Depression", "Anxiety", "Focus"] },
+                { id: "impact", label: "Day Contrast", type: "matrix", options: ["Missed Work", "Isolated", "Outburst", "Pushed through"] },
+                { id: "self_care", label: "Maintained Hygiene?", type: "matrix", options: ["Yes", "Neglected meals/shower"] }
+            ]
+        },
+        cp_audit: {
+            icon: "🏥", title: "C&P Exam Audit",
+            questions: [
+                { id: "goniometer", label: "Goniometer Used?", type: "matrix", options: ["Yes", "No", "N/A"] },
+                { id: "state", label: "Assessment Type", type: "matrix", options: ["Flare-up", "Normal Day"] },
+                { id: "forced", label: "Forced past pain?", type: "matrix", options: ["Yes, Forced", "No, Stopped"] },
+                { id: "pre-ex", label: "Pre-existing Blaming?", type: "matrix", options: ["Yes", "No"] },
+                { id: "duration", label: "Exam Duration", type: "matrix", options: ["< 10 mins", "10-30 mins", "30+ mins"] }
+            ]
+        },
+        visual_log: {
+            icon: "📸", title: "Visual Evidence Trigger",
+            questions: [
+                { id: "visible", label: "Visible Condition", type: "matrix", options: ["Swelling", "Rash/Skin", "Medical Device", "Other"] }
+            ]
+        },
+        tdiu_impact: {
+            icon: "💼", title: "TDIU / Employment Impact",
+            questions: [
+                { id: "impact", label: "Work Impact", type: "matrix", options: ["Missed Shift", "Left Early", "Reprimanded", "Reduced Prod"] },
+                { id: "lost_pay", label: "Financial Consequence", type: "matrix", options: ["Lost 8+ hrs", "Lost 1-7 hrs", "No (Salaried)"] }
+            ]
+        },
+        medication: {
+            icon: "💊", title: "Medication Tracker (Daily Strip)",
+            questions: [
+                { id: "side_effects", label: "Any side effects from this dose?", type: "matrix", options: ["Nausea", "Dizziness", "None"] }
+            ]
+        }
+    };
+
+    function renderDashboard() {
+        const matrix = document.getElementById('active-matrix');
+        const empty = document.getElementById('empty-dashboard');
+        const dash = document.getElementById('dashboard-buttons');
+        matrix.innerHTML = '';
+        
+        let activeCount = 0;
+        for(let id in loadout) {
+            if(loadout[id]) {
+                activeCount++;
+                const flow = flows[id];
+                const btn = document.createElement('div');
+                btn.className = 'matrix-btn';
+                btn.onclick = () => startFlow(id);
+                btn.innerHTML = `<span class="btn-emoji">${flow.icon}</span><span>${id.toUpperCase()}</span>`;
+                matrix.appendChild(btn);
+            }
+        }
+
+        if(activeCount === 0) {
+            empty.style.display = 'block';
+            dash.style.display = 'none';
+        } else {
+            empty.style.display = 'none';
+            dash.style.display = 'block';
+        }
+    }
+
+    function startFlow(type) {
+        currentFlowData = { type };
+        document.getElementById('dashboard-buttons').style.display = 'none';
+        document.getElementById('flow-container').style.display = 'block';
+        document.getElementById('flow-title').innerText = flows[type].title;
+        
+        const qContainer = document.getElementById('flow-questions');
+        qContainer.innerHTML = '';
+        
+        flows[type].questions.forEach(q => {
+            const div = document.createElement('div');
+            div.innerHTML = `<p style="margin:10px 0 5px 0;"><strong>${q.label}</strong></p>`;
+            const btnMat = document.createElement('div');
+            btnMat.className = 'button-matrix';
+            q.options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'matrix-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    btnMat.querySelectorAll('.matrix-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    currentFlowData[q.id] = opt;
+                };
+                btnMat.appendChild(btn);
+            });
+            div.appendChild(btnMat);
+            qContainer.appendChild(div);
+        });
+
+        // Special Defense Intercept: Medication Cabinet Buttons
+        if(type === 'medication') {
+            qContainer.innerHTML = '<p style="margin-bottom:10px;">Select medication to log:</p>';
+            const medMat = document.createElement('div');
+            medMat.className = 'button-matrix';
+            medCabinet.forEach(med => {
+                const btn = document.createElement('div');
+                btn.className = 'matrix-btn';
+                btn.innerText = `${med.name} (${med.dose})`;
+                btn.onclick = () => {
+                    currentFlowData['med_name'] = med.name;
+                    currentFlowData['med_dose'] = med.dose;
+                    currentFlowData['med_type'] = med.type;
+                    startSideEffectStep();
+                };
+                medMat.appendChild(btn);
+            });
+            qContainer.appendChild(medMat);
+        }
+
+        // Special Defense Intercept: Visual Evidence Photo Trigger
+        if(type === 'visual_log') {
+            const timestamp = new Date().toLocaleString();
+            currentFlowData['timestamp'] = timestamp;
+            // We wait for them to click a condition first, then alert.
+            // But let's trigger it immediately to be safe as per request.
+        }
+    }
+
+    function saveLog() {
+        if(currentFlowData.type === 'visual_log') {
+            alert("TIMESTAMP SECURED.\n\nPlease open your phone's native camera application RIGHT NOW and take a clear photograph.\n\nYou will match this photo's timestamp to this log during your VSO appointment.");
+        }
+        const logEntry = { ...currentFlowData, timestamp: new Date().toLocaleString(), notes: document.getElementById('flow-notes').value };
+        logs.unshift(logEntry);
+        localStorage.setItem('vso_logs', JSON.stringify(logs));
+        renderLogs();
+        resetTracker();
+    }
+
+    function resetTracker() {
+        showTab('tracker');
+        document.getElementById('flow-notes').value = '';
+    }
+
+    function renderLogs() {
+        const list = document.getElementById('logs-list');
+        if (logs.length === 0) return;
+        list.innerHTML = '';
+        logs.forEach(log => {
+            const div = document.createElement('div');
+            div.style.borderBottom = '1px solid #2d3442';
+            div.style.padding = '12px 0';
+            let summary = `<strong style="color:var(--accent-color)">${log.timestamp} | ${log.type.toUpperCase()}</strong><br/>`;
+            for(let key in log) {
+                if(!['type', 'timestamp', 'notes'].includes(key)) {
+                    summary += `${key}: ${log[key]} | `;
+                }
+            }
+            if(log.notes) summary += `<br/><i style="color:var(--text-dim)"> tactical notes: ${log.notes}</i>`;
+            div.innerHTML = summary;
+            list.appendChild(div);
+        });
+    }
+
+    function updateBuddy() {
+        const out = `Buddy Statement (VA-21-10210 Synthesis)\n\nRegarding social functioning: ${document.getElementById('buddy-q1').value}.\nPhysical limitations observed: ${document.getElementById('buddy-q2').value || 'unspecified'}.\nBehavioral patterns noted: ${document.getElementById('buddy-q3').value || 'unspecified'}.\nFrequency: ${document.getElementById('buddy-q4').value || 'unspecified'}. Signed under penalty of perjury.`;
+        document.getElementById('buddy-output').innerText = out;
+    }
+
+    // SHR CATCHER (Simplified for update)
+    let scanner = null;
+    document.getElementById('start-scan').onclick = () => {
+        scanner = new Html5Qrcode("reader");
+        scanner.start({ facingMode: "environment" }, { fps: 15, qrbox: 250 }, (text) => {
+            document.getElementById('qr-manifest').innerText = text;
+        }).catch(err => alert("Camera blocked."));
+    };
+    document.getElementById('stop-scan').onclick = () => { if(scanner) scanner.stop(); };
+
+    initLoadoutUI();
+    renderDashboard();
+    renderLogs();
+    renderMedCabinet();
+    updateBuddy();
+    updateNameUI();
+
+    function updateName() {
+        userName = document.getElementById('user-nickname').value;
+        localStorage.setItem('vso_user_name', userName);
+        updateNameUI();
+    }
+
+    function updateNameUI() {
+        const header = document.getElementById('main-header');
+        const input = document.getElementById('user-nickname');
+        if(input) input.value = userName;
+        header.innerText = userName ? `WELCOME BACK, ${userName.toUpperCase()}` : "VSO SPORE";
+    }
+
+    function generateDossier() {
+        const timeframe = document.getElementById('export-timeframe').value;
+        const now = new Date();
+        let limit = 0;
+        
+        if(timeframe !== 'all') {
+            limit = now.getTime() - (parseInt(timeframe) * 24 * 60 * 60 * 1000);
+        }
+        
+        // Filter and Sort Logs
+        const filteredLogs = logs.filter(log => {
+            if(timeframe === 'all') return true;
+            return new Date(log.timestamp).getTime() >= limit;
+        }).sort((a,b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+        // Prepare Print UI
+        document.getElementById('print-date-header').innerText = `Report Generated: ${now.toLocaleString()}`;
+        document.getElementById('print-timeframe-header').innerText = `Capture Window: ${document.getElementById('export-timeframe').selectedOptions[0].text}`;
+        
+        const medList = document.getElementById('print-med-list');
+        medList.innerHTML = '';
+        if(medCabinet.length > 0) {
+            medCabinet.forEach(m => {
+                medList.innerHTML += `<li>${m.name} (${m.type}) - ${m.dose}</li>`;
+            });
+        } else {
+            medList.innerHTML = '<li>No medications recorded in cabinet.</li>';
+        }
+
+        const logContainer = document.getElementById('print-log-entries');
+        logContainer.innerHTML = '';
+        if(filteredLogs.length > 0) {
+            filteredLogs.forEach(log => {
+                const item = document.createElement('div');
+                item.style.marginBottom = '20px';
+                item.style.padding = '10px';
+                item.style.borderBottom = '1px solid #eee';
+                
+                let details = `<strong>${log.timestamp} | ${log.type.toUpperCase()}</strong><br/>`;
+                for(let key in log) {
+                    if(!['type', 'timestamp', 'notes'].includes(key)) {
+                        details += `${key}: ${log[key]} | `;
+                    }
+                }
+                if(log.notes) details += `<br/><i>Notes: ${log.notes}</i>`;
+                item.innerHTML = details;
+                logContainer.appendChild(item);
+            });
+        } else {
+            logContainer.innerHTML = '<p>No log records found for the selected timeframe.</p>';
+        }
+
+        // Trigger Native Print
+        setTimeout(() => { window.print(); }, 500);
+    }
+
+    function addMed() {
+        const name = document.getElementById('new-med-name').value;
+        const dose = document.getElementById('new-med-dose').value;
+        const type = document.getElementById('new-med-type').value;
+        if(!name) return;
+        medCabinet.push({ name, dose, type });
+        localStorage.setItem('vso_meds', JSON.stringify(medCabinet));
+        renderMedCabinet();
+        document.getElementById('new-med-name').value = '';
+        document.getElementById('new-med-dose').value = '';
+    }
+
+    function removeMed(index) {
+        medCabinet.splice(index, 1);
+        localStorage.setItem('vso_meds', JSON.stringify(medCabinet));
+        renderMedCabinet();
+    }
+
+    function renderMedCabinet() {
+        const list = document.getElementById('med-cabinet-list');
+        const docList = document.getElementById('doctor-med-list');
+        list.innerHTML = '';
+        docList.innerHTML = '';
+        medCabinet.forEach((med, i) => {
+            list.innerHTML += `<div class="med-list-item"><span>${med.name} (${med.dose}) [${med.type}]</span><span style="color:var(--danger)" onclick="removeMed(${i})">✖</span></div>`;
+            docList.innerHTML += `<div>- ${med.name} (${med.type}) - ${med.dose}</div>`;
+        });
+    }
+
+    function startSideEffectStep() {
+        const qContainer = document.getElementById('flow-questions');
+        qContainer.innerHTML = '<p style="margin-bottom:10px;">Are you experiencing side effects?</p>';
+        const btnMat = document.createElement('div');
+        btnMat.className = 'button-matrix';
+        ["Nausea", "Dizziness", "None"].forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = 'matrix-btn';
+            btn.innerText = opt;
+            btn.onclick = () => {
+                currentFlowData['side_effects'] = opt;
+                btnMat.querySelectorAll('.matrix-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            };
+            btnMat.appendChild(btn);
+        });
+        qContainer.appendChild(btnMat);
+    }
+
+    // WELLNESS LOGIC
+    setInterval(() => {
+        const labels = ["Inhale", "Hold", "Exhale", "Hold"];
+        const step = Math.floor((Date.now() / 4000) % 4);
+        const label = document.getElementById('breath-label');
+        if(label) label.innerText = labels[step];
+    }, 100);
+
+    let audioCtx = null;
+    let osc = null;
+
+    function playFreq(hz) {
+        stopFreq();
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(hz, audioCtx.currentTime);
+        osc.connect(audioCtx.destination);
+        osc.start();
+    }
+
+    function stopFreq() {
+        if(osc) { osc.stop(); osc = null; }
+        if(audioCtx) { audioCtx.close(); audioCtx = null; }
+    }
+</script>
+
+</body>
+</html>
+
