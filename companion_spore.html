@@ -4,19 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VSO Spore</title>
-    <!-- PWA & MOBILE STANDALONE CAPABILITIES -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="VSO Spore">
     
-    <!-- EMBEDDED BRANDED ICON (Base64 SVG) -->
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMWExZTI2Ii8+PHBhdGggZD0iTTUwIDE1IEw4NSAzMCBMODUgNTUgQzg1IDc1IDUwIDkwIDUwIDkwIEM1MCA5MCAxNSA3NSAxNSA1NSBMMTUgMzAgTDUwIDE1IFoiIGZpbGw9IiM0YTkwZTIiLz48cmVjdCB4PSI0NCIgeT0iMzUiIHdpZHRoPSIxMiIgaGVpZ2h0PSIzMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIzNSIgeT0iNDQiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=">
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMWExZTI2Ii8+PHBhdGggZD0iTTUwIDE1IEw4NSAzMCBMODUgNTUgQzg1IDc1IDUwIDkwIDUwIDkwIEM1MCA5MCAxNSA3NSAxNSA1NSBMMTUgMzAgTDUwIDE1IFoiIGZpbGw9IiM0YTkwZTIiLz48cmVjdCB4PSI0NCIgeT0iMzUiIHdpZHRoPSIxMiIgaGVpZ2h0PSIzMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIzNSIgeT0iNDQiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=">
-    <!-- 
-      SHR CATCHER ENGINE: Only external dependency. 
-      In a true air-gap, this would be bundled. 
-    -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root {
@@ -377,7 +371,6 @@
 </header>
 
 <div class="main-container">
-    <!-- TAB 1: SETUP / LOADOUT -->
     <div id="setup" class="tab-content">
         <div class="card">
             <h2>User Profile</h2>
@@ -471,7 +464,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: SYMPTOM TRACKER (DYNAMIC) -->
     <div id="tracker" class="tab-content active">
         <div id="empty-dashboard" style="display:none; text-align:center; padding:40px 20px;">
             <p style="font-size:1.5rem;">🛰️</p>
@@ -481,10 +473,8 @@
         <div id="dashboard-buttons">
             <div class="chat-bubble">Awaiting input. Which symptom log are we starting?</div>
             <div class="button-matrix" id="active-matrix">
-                <!-- DYNAMICALLY RENDERED -->
-            </div>
+                </div>
 
-            <!-- VA MATH ENGINE UPGRADE: THE VETERAN SPORE -->
             <div style="background: #1e2329; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #4a90e2;">
                 <h3 style="color: #fff; margin-top: 0;">🧮 VA Math Calculator</h3>
                 
@@ -544,7 +534,6 @@
         </div>
     </div>
 
-    <!-- TAB 3: BUDDY STATEMENT -->
     <div id="buddy" class="tab-content">
         <div class="card">
             <h2>Buddy Wizard (VA-21-10210)</h2>
@@ -576,7 +565,6 @@
         </div>
     </div>
 
-    <!-- TAB 4: SYNC (SHR) -->
     <div id="receive" class="tab-content">
         <div class="card">
             <h2>SHR Secure Sync</h2>
@@ -592,7 +580,6 @@
         </div>
     </div>
 
-    <!-- TAB 5: WELLNESS (DECOMPRESSION) -->
     <div id="wellness" class="tab-content">
         <div class="card">
             <h2>🧘 Tactical Decompression</h2>
@@ -605,28 +592,25 @@
                     <h3>Frequency Oscillator</h3>
                     <p style="font-size:0.8rem; color:var(--text-dim)">Pulsed Sines for Vagus Nerve stimulation.</p>
                     <div class="osc-controls">
-                        <button class="osc-btn" onclick="playFreq(20)">20Hz</button>
-                        <button class="osc-btn" onclick="playFreq(40)">40Hz</button>
-                        <button class="osc-btn" onclick="playFreq(60)">60Hz</button>
-                        <button class="osc-btn" style="background:var(--danger)" onclick="stopFreq()">STOP</button>
+                        <button class="osc-btn" onclick="playOscillator(20)">20Hz</button>
+                        <button class="osc-btn" onclick="playOscillator(40)">40Hz</button>
+                        <button class="osc-btn" onclick="playOscillator(60)">60Hz</button>
+                        <button class="osc-btn" style="background:var(--danger)" onclick="stopOscillator()">STOP</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 6: WHITECOAT (DOCTOR REFERENCE) -->
     <div id="whitecoat" class="tab-content">
         <div class="card" style="background:#0c0e12; border:2px solid var(--accent-color)">
             <h1 style="color:var(--accent-color); font-size:1.8rem;">🩺 CURRENT MEDICATIONS</h1>
             <div class="whitecoat-list" id="doctor-med-list">
-                <!-- DYNAMICALLY RENDERED -->
-            </div>
+                </div>
             <button class="btn-primary" onclick="showTab('tracker')">Close Quick-Reference</button>
         </div>
     </div>
 
-    <!-- TAB 7: EXPORT DOSSIER -->
     <div id="export" class="tab-content">
         <div class="card">
             <h2>📄 Evidence Dossier Generator</h2>
@@ -675,7 +659,6 @@
     </div>
 </nav>
 
-<!-- HIDDEN PRINT TEMPLATE -->
 <div id="print-dossier" class="no-screen">
     <div class="dossier-header">
         <h1>VETERAN MEDICAL & EVIDENCE DOSSIER</h1>
@@ -1143,22 +1126,69 @@
         if(label) label.innerText = labels[step];
     }, 100);
 
-    let audioCtx = null;
-    let osc = null;
+    // The Digital Synthesizer Engine
+    let audioCtx;
+    let mainOscillator;
+    let lfo; 
+    let masterGain;
 
-    function playFreq(hz) {
-        stopFreq();
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        osc = audioCtx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(hz, audioCtx.currentTime);
-        osc.connect(audioCtx.destination);
-        osc.start();
+    function playOscillator(frequency) {
+        // 1. Kill any currently running frequencies
+        stopOscillator();
+
+        // 2. Ignite the Audio Context (Must happen AFTER a user clicks to bypass iOS security)
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        // 3. Create the Master Volume Router
+        masterGain = audioCtx.createGain();
+        masterGain.connect(audioCtx.destination);
+        masterGain.gain.value = 0.5; // Base volume at 50%
+
+        // 4. Create the Main Sine Wave Engine
+        mainOscillator = audioCtx.createOscillator();
+        mainOscillator.type = 'sine';
+        mainOscillator.frequency.value = frequency; // e.g., 40Hz
+
+        // 5. Create the "Pulse" Engine (Low Frequency Oscillator)
+        lfo = audioCtx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 1.5; // Controls the speed of the pulse (1.5 beats per second)
+
+        let lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 0.5; // Controls the depth of the pulse
+
+        // Connect the Pulse Engine to the Master Volume
+        lfo.connect(lfoGain);
+        lfoGain.connect(masterGain.gain);
+
+        // Connect the Main Wave to the Master Volume
+        mainOscillator.connect(masterGain);
+
+        // 6. Start both engines
+        mainOscillator.start();
+        lfo.start();
     }
 
-    function stopFreq() {
-        if(osc) { osc.stop(); osc = null; }
-        if(audioCtx) { audioCtx.close(); audioCtx = null; }
+    function stopOscillator() {
+        if (mainOscillator) {
+            mainOscillator.stop();
+            mainOscillator.disconnect();
+            mainOscillator = null;
+        }
+        if (lfo) {
+            lfo.stop();
+            lfo.disconnect();
+            lfo = null;
+        }
+        if (masterGain) {
+            masterGain.disconnect();
+            masterGain = null;
+        }
     }
 </script>
 
